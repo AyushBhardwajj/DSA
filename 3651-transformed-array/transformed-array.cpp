@@ -13,7 +13,7 @@ public:
             }
 
             else if(arr[i]<0){
-                int ind = (i+nums[i]+1000*n)%n;
+                int ind = ((i+nums[i])%n + n)%n;
                 arr[i] = nums[ind];
             }
         }
