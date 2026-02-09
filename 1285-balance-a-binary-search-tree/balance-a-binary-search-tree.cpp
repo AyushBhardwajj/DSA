@@ -14,8 +14,8 @@ public:
     void solve(TreeNode* root ,vector<int> &vec){
         if(root == nullptr)return;
 
-        vec.push_back(root->val);
         solve(root->left,vec);
+        vec.push_back(root->val);
         solve(root->right,vec);
     }
 
@@ -36,7 +36,7 @@ public:
     TreeNode* balanceBST(TreeNode* root) {
         vector<int> vec;
         solve(root,vec);
-        sort(vec.begin(),vec.end());
+        //sort(vec.begin(),vec.end());
         int k = vec.size();
 
         return solve2(vec,0,k-1);
