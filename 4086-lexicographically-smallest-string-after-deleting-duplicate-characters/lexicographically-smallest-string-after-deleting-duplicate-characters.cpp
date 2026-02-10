@@ -30,21 +30,6 @@ public:
 
         int i = ans.length()-1;
 
-        while(i>0 && ans[i]==ans[i-1]){
-            ans.pop_back();
-            mp[ans[i-1]]--;
-            i--;
-        }
-
-
-        // while(i>0 && ans[i]==s[i] && mp[s[i]]>1){
-        //     ans.pop_back();
-        //     mp[s[i]]--;
-        //     i--;
-        // }
-
-        i = ans.length()-1;
-
         while(i>0){
             if(mp[ans[i]]>1){
                 mp[ans[i]]--;
@@ -53,8 +38,6 @@ public:
             else break;
             i--;
         }
-
-
 
         return ans;
     }
