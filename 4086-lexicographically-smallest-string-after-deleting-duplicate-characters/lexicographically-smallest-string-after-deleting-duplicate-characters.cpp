@@ -36,14 +36,12 @@ public:
             i--;
         }
 
-        cout<<ans<<"\n";
 
-
-        while(i>0 && ans[i]==s[i] && mp[s[i]]>1){
-            ans.pop_back();
-            mp[s[i]]--;
-            i--;
-        }
+        // while(i>0 && ans[i]==s[i] && mp[s[i]]>1){
+        //     ans.pop_back();
+        //     mp[s[i]]--;
+        //     i--;
+        // }
 
         i = ans.length()-1;
 
