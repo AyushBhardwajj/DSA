@@ -69,7 +69,7 @@ public:
                 start = mid+1;
             }
 
-            cout<<mid<<" "<<curr<<"\n";
+            //cout<<mid<<" "<<curr<<"\n";
         }
 
         return ans;
