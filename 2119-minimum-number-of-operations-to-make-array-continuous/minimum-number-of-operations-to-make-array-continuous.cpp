@@ -1,8 +1,6 @@
 class Solution {
 public:
     int minOperations(vector<int>& nums) {
-        multiset<int> st;
-        map<int,int> mp;
         set<int> stt;
         int n = nums.size();
 
@@ -12,23 +10,17 @@ public:
         int maxt = 1;
 
         for(int i=0;i<nums.size();i++){
-            st.insert(nums[i]);
-            mp[nums[i]]++;
+            
             stt.insert(nums[i]);
 
-            int frst = *st.begin();
-            int end = *st.rbegin();
+            int frst = *stt.begin();
+            int end = *stt.rbegin();
 
             while(abs(end-frst)>=n){
-                auto it = st.find(frst);
-                st.erase(it);
-                mp[frst]--;
+                auto it = stt.find(frst);
+                stt.erase(it);
 
-                if(mp[frst]==0){
-                    stt.erase(frst);
-                }
-
-                frst = *st.begin();
+                frst = *stt.begin();
             }
 
             int curr = stt.size();
