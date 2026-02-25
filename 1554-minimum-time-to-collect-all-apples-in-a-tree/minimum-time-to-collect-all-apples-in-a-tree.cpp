@@ -15,7 +15,7 @@ public:
 
         if(ans!=0 || app[node])ans+=2;
 
-        cout<<node<<" "<<ans<<"\n";
+        //cout<<node<<" "<<ans<<"\n";
         
 
         return ans;
