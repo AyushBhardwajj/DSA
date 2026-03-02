@@ -2,11 +2,6 @@ class Solution {
 public:
     int minSwaps(vector<vector<int>>& grid) {
         int n = grid.size();
-        vector<int> arr(n,0);
-
-        for(int i=0;i<n;i++){
-            arr[i] = i;
-        }
 
         int ans = 0;
 
