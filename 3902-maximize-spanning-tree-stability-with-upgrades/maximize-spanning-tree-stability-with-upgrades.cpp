@@ -108,7 +108,7 @@ public:
             cnt++;
         }
 
-        if(cnt>n-1)return -1;
+        if(cnt!=(n-1))return -1;
 
         sort(lastt.begin(),lastt.end());
 
