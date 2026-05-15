@@ -2,9 +2,10 @@ class Solution {
 public:
     int maxResult(vector<int>& nums, int k) {
         multiset<int> mt;
-        map<int,int> mp;
 
         int n = nums.size();
+
+        vector<int> mp(n);
 
         mp[0] = nums[0];
         int start = 0;
