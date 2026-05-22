@@ -2,39 +2,40 @@ class Solution {
 public:
     int maxActiveSectionsAfterTrade(string s) {
         
-        string t = "1"+s+"1";
+        int n  = s.length();
 
-        int count = 0;
-        char ch = '1';
+        int maxAdjZeroGrp = 0;
+        int prevZeroGrp = -1e9;
 
-        vector<int> freqCount;
+        int start = 0;
 
-        for(int i=0;i<t.length();i++){
-            if(ch==t[i])count++;
-            else{
-                freqCount.push_back(count);
-                count = 1;
-                ch = t[i];
+        int oneCnt = 0;
+
+        for(int i=0;i<n;i++){
+            if(s[i] == '1')oneCnt++;
+        }
+
+        while(start < n){
+            int end = start;
+
+            while(end<n && s[start] == s[end]){
+                end++;
             }
-        }
 
-        freqCount.push_back(count);
+            int length = end-start;
 
-        int n = freqCount.size();
+            if(s[start] == '0'){
+                maxAdjZeroGrp = max(maxAdjZeroGrp,prevZeroGrp+length);
 
-        int ans = 0;
-
-        for(int i=2;i<freqCount.size();i+=2){
-            
-            if(i<n-2){
-                ans = max(ans,freqCount[i-1]+freqCount[i+1]);
+                prevZeroGrp = length;
             }
+
+            start = end;
         }
 
-        for(int i=0;i<s.length();i++){
-            if(s[i]=='1')ans += 1;
-        }
+        int answer = oneCnt + maxAdjZeroGrp;
 
-        return ans;
+        return answer;
+
     }
 };
