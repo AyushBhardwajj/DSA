@@ -29,7 +29,7 @@ public:
 
         for(int i=0;i<=k;i++){
             for(int j=0;j<dp1[i].size();j++){
-                int need = (sum - 2*dp1[i][j])/2;
+                int need = sum/2  - dp1[i][j];
 
                 auto it = lower_bound(dp2[k-i].begin(),dp2[k-i].end(),need);
 
