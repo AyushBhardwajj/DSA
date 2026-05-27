@@ -1,32 +1,47 @@
 class Solution {
 public:
-    vector<long long> prefix;
     vector<vector<int>> rects;
-    long long tot = 0;
+    vector<long long> cF;
+    long long sumt = 0;
 
     Solution(vector<vector<int>>& rects) {
+        long long sum = 0;
         this->rects = rects;
+        cF.push_back(0);
+
         for(int i=0;i<rects.size();i++){
-            long long curr = 1ll*(rects[i][2] - rects[i][0]+1)*(rects[i][3] - rects[i][1]+1);
-            tot  = tot+curr;
-            prefix.push_back(tot);
+            long long x1 = rects[i][0];
+            long long y1 = rects[i][1];
+            long long x2 = rects[i][2];
+            long long y2 = rects[i][3];
+
+            long long curr = 1ll*(x2-x1+1)*(y2-y1+1);
+            sum += curr;
+
+            cF.push_back(sum);
         }
+
+        this->sumt = sum;
+
     }
     
     vector<int> pick() {
-        long long r = rand()%tot + 1;
+        long long freq = rand()%sumt + 1;
 
-        int idx = lower_bound(prefix.begin(),prefix.end(),r)-prefix.begin();
+        int ind = lower_bound(cF.begin(),cF.end(),freq) - cF.begin();
 
-        int x1 = rects[idx][0];
-        int x2 = rects[idx][2];
-        int y1 = rects[idx][1];
-        int y2 = rects[idx][3];
+        int count = freq - cF[ind-1];
+        count--;
 
-        int x = x1 + rand()%(x2-x1+1);
-        int y = y1 + rand()%(y2-y1+1);
+        int x1 = rects[ind-1][0];
+        int y1 = rects[ind-1][1];
+        int x2 = rects[ind-1][2];
+        int y2 = rects[ind-1][3];
 
-        return {x,y};
+        int y3 = y1+count/(x2-x1+1);
+        int x3 = x1+count%(x2-x1+1);
+
+        return {x3,y3};
     }
 };
 
