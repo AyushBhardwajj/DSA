@@ -1,21 +1,33 @@
 class Solution {
 public:
     bool canReach(string s, int minJump, int maxJump) {
-        int n = s.size();
-        vector<int> f(n), pre(n);
-        f[0] = 1;
-        
-        for (int i = 0; i < minJump; ++i) {
-            pre[i] = 1;
-        }
-        for (int i = minJump; i < n; ++i) {
-            int left = i - maxJump, right = i - minJump;
-            if (s[i] == '0') {
-                int total = pre[right] - (left <= 0 ? 0 : pre[left - 1]);
-                f[i] = (total != 0);
+        int n = s.length();
+
+        vector<long long> dp(n,0);
+
+        dp[0] = 1ll;
+
+        int start = 0,end = 0;
+        int ind = minJump;
+        long long tot = 0;
+
+        while(ind<n){
+
+            tot = tot + dp[end];
+            while(ind-start > maxJump){
+                tot-=dp[start];
+                start++;
             }
-            pre[i] = pre[i - 1] + f[i];
+
+            if(s[ind]=='0' && tot>0){
+                dp[ind] = 1ll;
+            }
+
+            ind++;
+            end++;
         }
-        return f[n - 1];
+
+        return dp[n-1]>0ll?true:false;
+        
     }
 };
