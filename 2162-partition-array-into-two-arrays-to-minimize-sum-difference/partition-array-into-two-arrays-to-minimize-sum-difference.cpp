@@ -1,16 +1,17 @@
 class Solution {
 public:
-    void solve(int start,int end,int tot,int cnt,vector<int> &nums,vector<vector<int>> &dp){
+    void solve(int start,int end,int cnt,int sum,vector<int> &nums,vector<vector<int>> &dp){
         if(start == end){
-            dp[cnt].push_back(tot);
+            dp[cnt].push_back(sum);
             return;
         }
 
-        solve(start+1,end,tot+nums[start],cnt+1,nums,dp);
-        solve(start+1,end,tot,cnt,nums,dp);
+        solve(start+1,end,cnt+1,sum+nums[start],nums,dp);
+        solve(start+1,end,cnt,sum,nums,dp);
     }
     int minimumDifference(vector<int>& nums) {
         int n = nums.size();
+
         int k = n/2;
 
         int sum = accumulate(nums.begin(),nums.end(),0);
@@ -29,25 +30,21 @@ public:
 
         for(int i=0;i<=k;i++){
             for(int j=0;j<dp1[i].size();j++){
-                int need = sum/2  - dp1[i][j];
+                int need = sum/2 - dp1[i][j];
 
                 auto it = lower_bound(dp2[k-i].begin(),dp2[k-i].end(),need);
 
                 if(it!=dp2[k-i].end()){
-                    int val = *it;
-                    ans = min(ans,abs(sum - 2*(dp1[i][j] + val)));
+                    ans = min(ans,abs(sum - 2*(dp1[i][j]+*it)));
                 }
-
-
-                if(it != dp2[k-i].begin()){
+                
+                if(it!=dp2[k-i].begin()){
                     it--;
-                    int val = *it;
-                    ans = min(ans,abs(sum - 2*(dp1[i][j] + val)));
+                    ans = min(ans,abs(sum - 2*(dp1[i][j]+*it)));
                 }
             }
         }
 
         return ans;
-
     }
 };
