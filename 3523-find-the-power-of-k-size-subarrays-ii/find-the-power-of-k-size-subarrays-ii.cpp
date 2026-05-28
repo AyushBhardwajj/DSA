@@ -4,25 +4,26 @@ public:
         int n = nums.size();
 
         int start = 0,end = 0;
+        vector<int> dp(n);
 
-        vector<int> ans(n-k+1,-1);
+        dp[0] = 1;
 
-        if(k==1){
-            return nums;
+        for(int i=1;i<n;i++){
+            if(nums[i] == nums[i-1]+1){
+                dp[i] = 1+dp[i-1];
+            }
+            else dp[i] = 1;
         }
 
+        vector<int> fans;
 
-        for(int end = 1 ; end < n ; end++){
-            if(nums[end]!=nums[end-1]+1){
-                start = end;
+        for(int i=k-1;i<n;i++){
+            if(dp[i]>=k){
+                fans.push_back(nums[i]);
             }
-
-            else if(end-start+1 == k){
-                ans[start] = nums[end];
-                start++;
-            }
+            else fans.push_back(-1);
         }
 
-        return ans;
+        return fans;
     }
 };
