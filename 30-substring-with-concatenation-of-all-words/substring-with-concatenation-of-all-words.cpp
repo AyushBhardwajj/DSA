@@ -1,58 +1,53 @@
 class Solution {
 public:
     vector<int> findSubstring(string s, vector<string>& words) {
-        map<int,string> mp;
-        map<string,int> mp3;
+        unordered_map<string,int> mapWords;
+        int n = s.length();
+
+
+        for(int i=0;i<words.size();i++){
+            mapWords[words[i]]++;
+        }
 
         int k = words[0].length();
-        int m = words.size();
-        int n = s.length();
-    
-        for(int i=0;i<words.size();i++){
-            mp3[words[i]]++;
-        }
-
-        for(int i=0;i<=n-k;i++){
-            string str = s.substr(i,k);
-            if(mp3.count(str))mp[i] = str;
-        }
-        
 
         vector<int> ans;
 
-        for(int i = 0;i<k;i++){
+        for(int i=0;i<k;i++){
             int start = i,end = i;
-            map<string,int> mp2;
-            int cnt = 0;
-            while(end<n){
-                if(!mp.count(end)){
+            int cnt = words.size();
+            unordered_map<string,int> mapSubstr;
+
+            while(end+k<=n){
+                string str = s.substr(end,k);
+
+                if(!mapWords.count(str)){
                     start = end+k;
                     end = end+k;
-                    cnt = 0;
-                    mp2.clear();
+                    cnt = words.size();
+                    mapSubstr.clear();
                     continue;
                 }
-
-                string str = mp[end];
-
-                if(mp2[str]+1 > mp3[str]){
-                    mp2[mp[start]]-=1;
-                    start+=k;
+                else{
+                    mapSubstr[str]++;
                     cnt--;
-                }
-                else {
-                    mp2[str]+=1;
-                    end+=k;
-                    cnt++;
+                    while(mapSubstr[str] > mapWords[str]){
+                        string curr = s.substr(start,k);
+                        mapSubstr[curr]--;
+                        cnt++;
+                        start+=k;
+                    }
+
+                    if(cnt == 0){
+                        ans.push_back(start);
+                        string curr2 = s.substr(start,k);
+                        start+=k;
+                        cnt++;
+                        mapSubstr[curr2]--;
+                    }
                 }
 
-                if(cnt == m){
-                    int crr = start;
-                    ans.push_back(crr);
-                    mp2[mp[start]]-=1;
-                    start+=k;
-                    cnt--;
-                }
+                end +=k;
             }
         }
 
