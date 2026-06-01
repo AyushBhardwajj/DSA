@@ -1,48 +1,34 @@
 class Solution {
 public:
     int strStr(string haystack, string needle) {
+        long long base = 1;
+        long long hash1 = 0;
+        long long hash2 = 0;
 
         int n = needle.length();
         int h = haystack.length();
-        
-        vector<int> lps(n,0);
 
-        int length = 0;
+        long long mod = 1e9+7;
 
-        for(int i=1;i<n;i++){
-            if(needle[i] == needle[length]){
-                length++;
-                lps[i] = length;
-            }
-            else{
-                if(length!=0){
-                    length = lps[length-1];
-                    i--;
-                }
-                else{
-                    lps[i] = 0;
-                }
-            }
+        for(int i=0;i<n;i++){
+            hash1 = ((hash1*31)%mod + (needle[i]-'a'+1))%mod;
         }
 
-        int s1 = 0,s2 = 0;
+        for(int i=0;i<n;i++){
+            hash2 = ((hash2*31)%mod + (haystack[i]-'a'+1))%mod;
+            if(i<n-1)base = (base*31)%mod;
+        }
 
-        while(s1<h){
-            if(needle[s2] == haystack[s1]){
-                s2++;
-                s1++;
-            }
+        if(hash1 == hash2){
+            if(needle == haystack.substr(0,n))return 0;
+        }
 
-            if(s2 == n)return s1-s2;
-            if(s1 == h)return -1;
+        for(int i=n;i<h;i++){
+            hash2 = (hash2 - (base*(haystack[i-n]-'a'+1))%mod + mod)%mod;
+            hash2  =  ((hash2*31)%mod + haystack[i]-'a'+1)%mod;
 
-            if(needle[s2]!=haystack[s1]){
-                if(s2!=0){
-                    s2 = lps[s2-1];
-                }
-                else{
-                    s1++;
-                }
+            if(hash1 == hash2){
+                if(needle == haystack.substr(i-n+1,n))return i-n+1;
             }
         }
 
