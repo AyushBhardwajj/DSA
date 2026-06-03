@@ -5,12 +5,29 @@ public:
         reverse(rev.begin(),rev.end());
         int n = s.length();
 
-        for(int i=0;i<s.length();i++){
-            if(!memcmp(s.c_str(),rev.c_str()+i,n-i)){
-                return rev.substr(0,i)+s;
+        string merge = s+"#"+rev;
+
+        vector<int> lps(2*n+1,0);
+        int length = 0;
+
+        for(int i=1;i<=2*n;i++){
+            if(merge[i] == merge[length]){
+                lps[i] = length+1;
+                length++;
+            }
+            else{
+                if(length != 0){
+                    length = lps[length-1];
+                    i--;
+                }
+                else{
+                    lps[i] = 0;
+                }
             }
         }
 
-        return rev+s;
+        string ans = rev.substr(0,n-lps[2*n])+s;
+
+        return ans;
     }
 };
