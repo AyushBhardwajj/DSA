@@ -9,40 +9,38 @@ public:
         next = NULL;
         prev = NULL;
     }
+
 };
 
 class BrowserHistory {
 public:
-    Node* start;
+    Node* browser;
     Node* tail;
     BrowserHistory(string homepage) {
-        start = new Node(homepage);
-        tail = start;
+        browser = new Node(homepage);
+        tail = browser;
     }
     
     void visit(string url) {
-        Node* temp = new Node(url);
-        tail->next = temp;
-        temp->prev = tail;
-        tail = temp;
+        tail->next = new Node(url);
+        tail->next->prev = tail;
+        tail = tail->next;
     }
     
     string back(int steps) {
-        while(steps>0 && tail->prev!=nullptr){
+        while(steps-- && tail->prev){
             tail = tail->prev;
-            steps--;
         }
 
         return tail->data;
     }
     
     string forward(int steps) {
-        while(steps>0 && tail->next!=nullptr){
+        while(steps-- && tail->next){
             tail = tail->next;
-            steps--;
         }
-        return tail->data;
 
+        return tail->data;
     }
 };
 
