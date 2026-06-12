@@ -1,10 +1,8 @@
 class Solution {
 public:
-    
-    long long binpowmod(long long base,long long pow,long long mod){
+    int findpow(long long base,long long pow,long long mod){
         base = base%mod;
-        long long ans = 1ll;
-
+        long long ans  =1;
         while(pow){
             if(pow&1){
                 ans = (ans*base)%mod;
@@ -15,91 +13,69 @@ public:
             pow = pow>>1;
         }
 
-        return ans;
+        return (int)ans;
     }
 
-    long long solve(string &num,int curr,int tot,int ind,vector<int> &digi,int sum,int oddind,int totFac,vector<long long> &invFac,vector<vector<vector<long long>>> &dp){
-        if(ind == 10){
-            if(curr == (sum/2) && tot == oddind)return totFac;
+    long long solve(int digit,int eveCnt,int currSum,vector<int>& freq,vector<long long> &invfac,int totalsum,long long totalPerm,int n,vector<vector<vector<long long>>> &dp){
+        if(digit == 10){
+            if((currSum == (totalsum)/2) && eveCnt == (n+1)/2){
+                return totalPerm;
+            }
             return 0;
         }
 
-        if(dp[curr][tot][ind]!=-1)return dp[curr][tot][ind];
+        if(dp[digit][eveCnt][currSum]!=-1)return dp[digit][eveCnt][currSum];
 
-        long long mod = 1e9+7;
 
         long long ways = 0;
-
-
-        for(int i=0;i<=digi[ind];i++){
-            long long crr = (invFac[i]*invFac[digi[ind]-i])%mod;
-
-            long long ans = solve(num,curr+i*ind,tot+i,ind+1,digi,sum,oddind,totFac,invFac,dp);
-
-            ans = (ans*crr)%mod;
-
-            ways=(ways+ans)%mod;
-
-        }
-
-        return dp[curr][tot][ind] = ways;
-    }
-     
-    int countBalancedPermutations(string num) {
-        int sum = 0;
-        int n = num.length();
-
         long long mod = 1e9+7;
 
-        vector<vector<vector<long long>>> dp(721,vector<vector<long long>>(n+1,vector<long long>(10,-1)));
+        for(int i = 0;i<=min(freq[digit],(n+1)/2 - eveCnt);i++){
+            long long div = (invfac[i]*invfac[freq[digit]-i])%mod;
 
-        vector<long long> invFac(81,0);
+            long long val = solve(digit+1,eveCnt+i,currSum+i*digit,freq,invfac,totalsum,totalPerm,n,dp);
 
-
-        long long invff = 1;
-
-        for(int i=1;i<=80;i++){
-            invff = (invff*i)%mod;
+            ways = (ways + (div*val)%mod)%mod;
         }
 
-        invff = binpowmod(invff,mod-2,mod);
+        return dp[digit][eveCnt][currSum] = ways;
+    }
 
-        invFac[80] = invff;
+    int countBalancedPermutations(string num) {
+        int n = num.length();
+        int totalsum = 0;
+        long long mod = 1e9+7;
 
-        for(int i=79;i>=0;i--){
-            invFac[i] = (invFac[i+1]*(i+1))%mod; 
+        vector<int> freq(10,0);
+
+        for(int i=0;i<n;i++){
+            freq[num[i]-'0']++;
+            totalsum += (int)(num[i]-'0');
         }
 
-        
-        long long et1 = 1;
+        if(totalsum%2)return 0;
 
-        vector<int> digi(10,0);
+        vector<long long> fact(n+1,1);
+        fact[0] = 1;
+        fact[1] = 1;
 
-        for(int i=0;i<num.length();i++){
-            digi[(int)(num[i]-'0')]++;
-            sum+=(int)(num[i]-'0');
+        for(int i=2;i<=n;i++){
+            fact[i] = ((fact[i-1]*i)%mod);
         }
 
-        if(sum%2)return 0;
+        vector<long long> invfact(n+1,1);
 
-        long long oddFac = 1;
-        long long eveFac = 1;
+        invfact[n] = findpow(fact[n],mod-2,mod);
 
-        int eveind = (n+1)/2;
-        int oddind = (n/2);
-
-        for(int i=1;i<=oddind;i++){
-            oddFac = (oddFac*i)%mod;
+        for(int i=n-1;i>=0;i--){
+            invfact[i] = 1ll*(invfact[i+1]*(i+1))%mod;
         }
 
-        eveFac = oddFac;
+        long long totalPerm = 1ll*(fact[(n+1)/2]*fact[n/2])%mod;
 
-        if(eveind != oddind)eveFac = (eveFac*eveind)%mod;
+        vector<vector<vector<long long>>> dp(10,vector<vector<long long>>((n+3)/2,vector<long long>(721,-1)));
 
-        long long totFac = (oddFac*eveFac)%mod;
-
-        return (int)solve(num,0,0,0,digi,sum,oddind,totFac,invFac,dp);
-
+        return solve(0,0,0,freq,invfact,totalsum,totalPerm,n,dp);
 
     }
 };
