@@ -11,51 +11,71 @@
  */
 class Solution {
 public:
-    int solve(TreeNode* root,vector<int> &dp,int cnt,map<int,multiset<int>> &mp,vector<int> &level){
-        if(root == NULL)return 0;
+    int solve(TreeNode* root,int level,map<int,multiset<int>> &mt,vector<int> &dp){
+        if(root==NULL)return 0;
 
-        level[root->val] = cnt;
+        int left = solve(root->left,level+1,mt,dp);
+        int right = solve(root->right,level+1,mt,dp);
 
-        int left = solve(root->left,dp,cnt+1,mp,level);
-        int right = solve(root->right,dp,cnt+1,mp,level);
+        int ht = max(left,right);
+        mt[level].insert(ht);
 
-        int curr = 1+max(left,right);
+        if(mt[level].size()>2)mt[level].erase(mt[level].begin());
 
-        mp[cnt].insert(curr);
+        dp[root->val] = ht;
 
-        return dp[root->val] = 1+max(left,right);
+        return 1+ht;
     }
     vector<int> treeQueries(TreeNode* root, vector<int>& queries) {
+        map<int,multiset<int>> mt;
+        vector<int> lvl(1e5+1,0);
         vector<int> dp(1e5+1,0);
-        vector<int> level(1e5+1,0);
-        map<int,multiset<int>> mt2;
+
+        queue<TreeNode*> q;
+        q.push(root);
+        int cnt = 0;
+
+        while(!q.empty()){
+            int siz = q.size();
+
+            for(int i=0;i<siz;i++){
+                TreeNode* node = q.front();
+                q.pop();
+                int data = node->val;
+                if(node->left)q.push(node->left);
+                if(node->right)q.push(node->right);
+                lvl[data] = cnt;
+            }
+            cnt++;
+        }
+
+        solve(root,0,mt,dp);
+
         vector<int> ans;
 
-        int maxt = solve(root,dp,0,mt2,level);
-
         for(int i=0;i<queries.size();i++){
-            int node = queries[i];
+            int data = queries[i];
+            int level = lvl[data];
+            int height = dp[data];
 
-            int lvl = level[node];
+            auto it = mt[level].find(height);
 
-            int ht = dp[node];
+            if(it!=mt[level].end())mt[level].erase(it);
 
-            auto it = mt2[lvl].find(ht);
-
-            mt2[lvl].erase(it);
-
-            if(mt2[lvl].empty()){
-                ans.push_back(lvl-1);
-            } 
+            if(mt[level].size()==0){
+                ans.push_back(level-1);
+            }
             else{
-                int val = *mt2[lvl].rbegin();
-                ans.push_back(lvl+val-1);
+                int newHtt = *prev(mt[level].end());
+                ans.push_back(level+newHtt);
             }
 
-            mt2[lvl].insert(ht);
+            mt[level].insert(height);
+
+            if(mt[level].size()>2)mt[level].erase(mt[level].begin());
+
         }
 
         return ans;
-
     }
 };
