@@ -28,7 +28,7 @@ public:
             }
             else {
                 tot--;
-                if(tot<=k)return s[i];
+                if(tot==k)return s[i];
             }
         }
 
