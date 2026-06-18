@@ -5,18 +5,9 @@ public:
         double singlehour = 30.0;
         double singleminute = 6.0;
 
-        map<int,double> mphr,mpmin;
 
-        for(int i=1;i<=12;i++){
-            mphr[i] = i*singlehour;
-        }
-
-        for(int i=1;i<=60;i++){
-            mpmin[i] = i*singleminute;
-        }
-
-        double anglehrr = mphr[hour];
-        double anglemin = mpmin[minutes];
+        double anglehrr = (double)hour*singlehour;
+        double anglemin = (double)(singleminute*minutes);
 
         double calc = (double)((minutes/2.0));
         anglehrr+=calc;
