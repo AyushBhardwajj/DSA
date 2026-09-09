@@ -6,14 +6,14 @@ public:
                vector<int> &dp) {
         
         if(mask == (1<<nums.size()) - 1)
-            return true;   // all elements used
+            return true;
         
         if(dp[mask] != -1)
             return dp[mask];
         
         for(int j = 0; j < nums.size(); j++){
             
-            if(mask & (1<<j)) continue;  // already used
+            if(mask & (1<<j)) continue;
             
             if(currSum + nums[j] <= target){
                 
@@ -38,7 +38,7 @@ public:
         
         int target = total / k;
         
-        sort(nums.rbegin(), nums.rend());   // important optimization
+        //sort(nums.rbegin(), nums.rend());
         
         if(nums[0] > target) return false;
         
