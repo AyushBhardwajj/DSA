@@ -1,20 +1,6 @@
 class Solution {
 public:
     int dp[2000][2000];
-    int solve(int i,int j,string &s,int k){
-        if(i == s.length())return 0;
-        if(j == s.length())return 0;
-
-        int take = 0,nottake = 0;
-
-        if(((j-i+1) >=k) && (dp[i][j]==1)){
-            take = 1+solve(j+1,j+1,s,k);
-        }
-
-        nottake  = solve(i,j+1,s,k)+solve(j+1,j+1,s,k);
-
-        return take+nottake;
-    }
     int maxPalindromes(string s, int k) {
         
         int n = s.length();
@@ -67,7 +53,5 @@ public:
         }
 
         return ans[n-1];
-
-        //return solve(0,0,s,k);
     }
 };
