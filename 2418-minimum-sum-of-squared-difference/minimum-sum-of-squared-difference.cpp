@@ -44,8 +44,8 @@ public:
 
         if(diff == 0)return 0;
         vector<vector<int>> adj;
-        cout<<rem<<"\n";
-        
+        //cout<<rem<<"\n";
+
 
         for(int i=0;i<nums1.size();i++){
             long long curr = abs(nums1[i]-nums2[i]);
@@ -61,7 +61,7 @@ public:
             }
         }
 
-        cout<<diff<<"\n";
+        //cout<<diff<<"\n";
 
         return ans;
 
