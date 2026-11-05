@@ -3,6 +3,8 @@ public:
     long long binpow(long long a,long long b,long long mod){
         long long ans = 1;
 
+        a = a%mod;
+
         while(b>0){
             if(b&1){
                 ans = ans*a%mod;
