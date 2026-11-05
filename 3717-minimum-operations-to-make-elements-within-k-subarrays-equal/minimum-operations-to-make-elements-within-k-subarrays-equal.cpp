@@ -1,61 +1,126 @@
 class Solution {
 public:
+    long long solve(vector<long long> &curr,int ind,int k,int x,vector<vector<long long>> &dp){
+        if(ind >= curr.size()){
+            if(k==0)return 0;
+            return 1e15;
+        }
+
+        if(dp[ind][k]!=-1)return dp[ind][k];
+
+        long long take = 1e15,nottake = 1e15;
+
+        if(k>0){
+            take = curr[ind]+solve(curr,ind+x,k-1,x,dp);
+        }
+        nottake = solve(curr,ind+1,k,x,dp);
+
+        return dp[ind][k] = min(take,nottake);
+
+    }
     long long minOperations(vector<int>& nums, int x, int k) {
+
         int n = nums.size();
-        vector<int> vals(nums);
-        sort(vals.begin(), vals.end());
-        vals.erase(unique(vals.begin(), vals.end()), vals.end());
-        int m = vals.size();
-        vector<int> rk(n);
-        for (int i = 0; i < n; i++) {
-            rk[i] = lower_bound(vals.begin(), vals.end(), nums[i]) - vals.begin() + 1;
-        }
-        vector<int> cnt(m + 1, 0);
-        vector<long long> sm(m + 1, 0);
-        int top = 1;
-        while (top * 2 <= m) top *= 2;
-        int need = (x + 1) / 2;
-        int w = n - x + 1;
-        vector<long long> cost(w);
-        long long total = 0;
-        for (int i = 0; i < n; i++) {
-            total += nums[i];
-            for (int p = rk[i]; p <= m; p += p & -p) {
-                cnt[p] += 1;
-                sm[p] += nums[i];
-            }
-            if (i >= x) {
-                total -= nums[i - x];
-                for (int p = rk[i - x]; p <= m; p += p & -p) {
-                    cnt[p] -= 1;
-                    sm[p] -= nums[i - x];
+        vector<long long> curr;
+        long long sum1 = 0,sum2 = 0;
+        multiset<int> st1,st2;
+        int s1 = 0,s2 = 0;
+        int l = 0;
+
+        for(int i=0;i<n;i++){
+            sum2+=nums[i];
+            st2.insert(nums[i]);
+            s2++;
+
+            if(s1>0){
+                auto it = st1.rbegin();
+                auto at = st2.begin();
+
+                int val1 = *it;
+                int val2 = *at;
+
+                if(val1>val2){
+                    st1.erase(prev(st1.end()));
+                    st2.erase(at);
+                    sum2 = sum2 - val2 +val1;
+                    sum1 = sum1 - val1 +val2;
+                    st1.insert(val2);
+                    st2.insert(val1);
                 }
             }
-            if (i >= x - 1) {
-                int pos = 0, rem = need;
-                long long s0 = 0;
-                for (int pw = top; pw > 0; pw >>= 1) {
-                    int nxt = pos + pw;
-                    if (nxt <= m && cnt[nxt] < rem) {
-                        pos = nxt;
-                        rem -= cnt[nxt];
-                        s0 += sm[nxt];
-                    }
+
+            if(x%2){
+                while(s2>=s1){
+                    auto it = st2.begin();
+                    int val1 = *it;
+                    st1.insert(val1);
+                    sum2-=val1;
+                    sum1+=val1;
+                    st2.erase(it);
+                    s1++;
+                    s2--;
                 }
-                long long med = vals[pos];
-                long long c0 = need - rem;
-                cost[i - x + 1] = med * c0 - s0 + (total - s0) - med * (x - c0);
+            }
+            else{
+                while(s2>s1){
+                    auto it = st2.begin();
+                    int val1 = *it;
+                    st1.insert(val1);
+                    sum2-=val1;
+                    sum1+=val1;
+                    st2.erase(it);
+                    s1++;
+                    s2--;
+                }
+            }
+
+            if((s1+s2) == x){
+                if(x%2 == 0){
+                    int m1 = *st2.begin();
+                    int m2 = *st1.rbegin();
+
+                    long long mint1 = 1ll*s1*m1 - sum1 + sum2 - 1ll*s2*m1;
+                    long long mint2 = 1ll*s1*m2 - sum1 + sum2 - 1ll*s2*m2;
+
+                    long long mint = min(mint1,mint2);
+
+                    curr.push_back(mint);
+                }
+                else{
+                    //int m1 = *s2.begin();
+                    int m2 = *st1.rbegin();
+
+                    //long long mint1 = 1ll*s1*m1 - sum1 + sum2 - 1ll*s2*m1;
+                    long long mint2 = 1ll*s1*m2 - sum1 + sum2 - 1ll*s2*m2;
+
+                    //long long mint = min(mint1,mint2);
+
+                    curr.push_back(mint2);
+                }
+
+                int rem = nums[l];
+                l++;
+
+                auto it = st2.find(rem);
+
+                if(it!=st2.end()){
+                    st2.erase(it);
+                    sum2 -= rem;
+                    s2--;
+                    continue;
+                }
+                else{
+                    auto at = st1.find(rem);
+                    st1.erase(at);
+                    sum1 -= rem;
+                    s1--;
+                }
             }
         }
-        const long long INF = 1000000000000000000LL;
-        vector<long long> prev(n + 1, 0), cur(n + 1, 0);
-        for (int j = 0; j < k; j++) {
-            for (int i = 0; i < x; i++) cur[i] = INF;
-            for (int i = x; i <= n; i++) {
-                cur[i] = min(cur[i - 1], prev[i - x] + cost[i - x]);
-            }
-            swap(prev, cur);
-        }
-        return prev[n];
+
+        vector<vector<long long>> dp(n,vector<long long>(k+1,-1));
+
+        return solve(curr,0,k,x,dp);
+
     }
 };
